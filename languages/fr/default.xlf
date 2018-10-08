@@ -1,0 +1,23 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="system/modules/wem-contao-form-conditional-notifications/languages/en/default.php" source-language="en" target-language="fr">
+    <body>
+    	<trans-unit id="WEM.FCN.notificationSent">
+			<source>The notification ID %s has been sent from the custom contact ID %s</source>
+			<target>La notification ID %s a été envoyée depuis la condition ID %s</target>
+		</trans-unit>
+		<trans-unit id="WEM.FCN.exceptionThrown">
+			<source>Exception thrown with the message %s and the trace %s</source>
+			<target>Exception lancée avec le message %s et la trace %s</target>
+		</trans-unit>
+
+		<trans-unit id="WEM.FCN.neutral">
+			<source>Neutral</source>
+			<target>Neutre</target>
+		</trans-unit>
+		<trans-unit id="WEM.FCN.defaultConfig">
+			<source>Default configuration</source>
+			<target>Configuration par défaut</target>
+		</trans-unit>
+    </body>
+  </file>
+</xliff>
