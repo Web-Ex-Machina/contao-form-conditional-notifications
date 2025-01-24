@@ -21,7 +21,7 @@ class Field extends \tl_wem_form_conditional_notification_field
 
     public function adjustPalette($objDc)
     {
-        $objField = Field::findByPk($objDc->id);
+        $objField = FieldModel::findByPk($objDc->id);
         $objFormField = FormFieldModel::findByPk($objField->field);
         $objForm = FormModel::findByPk($objFormField->pid);
 
