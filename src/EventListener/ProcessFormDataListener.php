@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace WEM\FormConditionalNotificationsBundle\EventListener;
 
-use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
 use Contao\FormFieldModel;
 use Contao\System;
@@ -13,7 +12,6 @@ use NotificationCenter\Model\Notification;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 
-#[AsHook('processFormData')]
 class ProcessFormDataListener
 {
 	public function __invoke(array $arrData, array $arrForm, ?array $arrFiles, array $arrLabels, Form $form): void

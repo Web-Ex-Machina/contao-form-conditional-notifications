@@ -1,0 +1,4 @@
+services:
+    WEM\FormConditionalNotificationsBundle\EventListener\ProcessFormDataListener:
+        tags:
+            - { name: contao.hook, hook: processFormData }
