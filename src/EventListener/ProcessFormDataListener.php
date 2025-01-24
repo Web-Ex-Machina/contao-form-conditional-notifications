@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WEM\FormConditionalNotificationsBundle\EventListener;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
 use Contao\FormFieldModel;
 use Contao\System;
@@ -13,23 +13,21 @@ use NotificationCenter\Model\Notification;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 
-/**
- * Extension functions
- */
+#[AsHook('processFormData')]
 class ProcessFormDataListener
 {
-	/**
-     * @Hook("processFormData")
-     */
-	public function processFormData(array $arrData, array $arrForm, ?array $arrFiles, array $arrLabels, Form $form): void
+	public function __invoke(array $arrData, array $arrForm, ?array $arrFiles, array $arrLabels, Form $form): void
 	{
+		dump('hook');
+		die;
+
 		try {
 			// Check if we have an overide set up
-			if(0 === Notification::countBy('pid', $arrForm['id']))
+			if(0 === Notification::countBy('pid', $form->id))
 				return;
 
 			// Then, check, in the sorting/priority order, if there is a match in the overides
-			$objRows = Notification::findBy('pid', $arrForm['id'], ["order"=>"sorting ASC"]);
+			$objRows = Notification::findBy('pid', $form->id, ["order"=>"sorting ASC"]);
 			while($objRows->next()){
 				// Get all the conditions
 				$objConditions = Field::findBy('pid', $objRows->id, ["order"=>"sorting ASC"]);
