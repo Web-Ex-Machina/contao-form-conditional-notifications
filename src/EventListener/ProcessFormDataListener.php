@@ -1,33 +1,38 @@
 <?php
 
-/**
- * Form Conditional Notifications Extension for Contao Open Source CMS
- *
- * Copyright (c) 2018 Web ex Machina
- *
- * @author Web ex Machina <https://www.webexmachina.fr>
- */
+declare(strict_types=1);
 
-namespace WEM\FCN;
+namespace WEM\FormConditionalNotificationsBundle\EventListener;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\Form;
+use Contao\FormFieldModel;
+use Contao\System;
 use Exception;
+use NotificationCenter\Model\Notification;
+use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
+use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 
 /**
  * Extension functions
  */
-class Hooks extends \Controller
+class ProcessFormDataListener
 {
-	public function processFormData($arrData, $arrForm, $arrFiles, $arrLabels){
-		try{
+	/**
+     * @Hook("processFormData")
+     */
+	public function processFormData(array $arrData, array $arrForm, ?array $arrFiles, array $arrLabels, Form $form): void
+	{
+		try {
 			// Check if we have an overide set up
-			if(0 === Model\Notification::countBy('pid', $arrForm['id']))
+			if(0 === Notification::countBy('pid', $arrForm['id']))
 				return;
 
 			// Then, check, in the sorting/priority order, if there is a match in the overides
-			$objRows = Model\Notification::findBy('pid', $arrForm['id'], ["order"=>"sorting ASC"]);
+			$objRows = Notification::findBy('pid', $arrForm['id'], ["order"=>"sorting ASC"]);
 			while($objRows->next()){
 				// Get all the conditions
-				$objConditions = Model\Field::findBy('pid', $objRows->id, ["order"=>"sorting ASC"]);
+				$objConditions = Field::findBy('pid', $objRows->id, ["order"=>"sorting ASC"]);
 				$blnSendNotification = true;
 
 				// If there is no conditions, we consider this as the default one and we must use it.
@@ -35,7 +40,7 @@ class Hooks extends \Controller
 					// For each condition saved, check if the field sent match
 					while($objConditions->next()){
 						// Get the field model
-						$objField = \FormFieldModel::findByPk($objConditions->field);
+						$objField = FormFieldModel::findByPk($objConditions->field);
 
 						// You shall not be checked !
 						if(!$objField)
@@ -94,7 +99,7 @@ class Hooks extends \Controller
 				// If all the conditions are satisfying, send the notification and break the loop
 				if($blnSendNotification){
 					// Get the notification
-					$objNotification = \NotificationCenter\Model\Notification::findByPk($objRows->nc_notification);
+					$objNotification = Notification::findByPk($objRows->nc_notification);
 
 					// Generate the tokens
 					$arrTokens = $this->generateTokens(
@@ -123,7 +128,7 @@ class Hooks extends \Controller
 
 					// And send the notification with the language wanted
 					if($objNotification->send($arrTokens, $objRows->language ?: $GLOBALS['TL_LANGUAGE']))
-						\System::log(sprintf($GLOBALS['TL_LANG']['WEM']['FCN']['notificationSent'], $objNotification->id, $objRows->id), __METHOD__, "WEM_FCN");
+						System::log(sprintf($GLOBALS['TL_LANG']['WEM']['FCN']['notificationSent'], $objNotification->id, $objRows->id), __METHOD__, "WEM_FCN");
 
 			         // And break the loop
 			        break;
@@ -131,7 +136,7 @@ class Hooks extends \Controller
 			}
 		}
 		catch(Exception $e){
-			\System::log(vsprintf($GLOBALS['TL_LANG']['WEM']['FCN']['exceptionThrown'], [$e->getMessage(), $e->getTrace()]), __METHOD__, "WEM_FCN");
+			System::log(vsprintf($GLOBALS['TL_LANG']['WEM']['FCN']['exceptionThrown'], [$e->getMessage(), $e->getTrace()]), __METHOD__, "WEM_FCN");
 		}
 	}
 
