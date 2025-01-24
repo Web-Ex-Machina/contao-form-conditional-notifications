@@ -58,10 +58,10 @@ class Hooks extends \Controller
 										$arrOptions = [];
 										foreach(deserialize($objField->options) as $intKey => $arrOption){
 											// Start point of our available options
-											if($arrOption['group'] && $arrOption['value'] == $arrConditionValue[1])
+											if(array_key_exists('group', $arrOption) && $arrOption['group'] && $arrOption['value'] == $arrConditionValue[1])
 												$intStartKey = $intKey;
 											// End point of our available options
-											else if($intStartKey > 0 && $arrOption['group'])
+											else if($intStartKey > 0 && array_key_exists('group', $arrOption) && $arrOption['group'])
 												break;
 											// Add option to available ones
 											else if($intStartKey > 0)
@@ -152,13 +152,13 @@ class Hooks extends \Controller
         $arrTokens['raw_data'] = '';
 
         foreach ($arrData as $k => $v) {
-            \Haste\Util\StringUtil::flatten($v, 'form_'.$k, $arrTokens, $delimiter);
+            $this->flatten($v, 'form_'.$k, $arrTokens, $delimiter);
             $arrTokens['formlabel_'.$k] = isset($arrLabels[$k]) ? $arrLabels[$k] : ucfirst($k);
             $arrTokens['raw_data'] .= (isset($arrLabels[$k]) ? $arrLabels[$k] : ucfirst($k)) . ': ' . (is_array($v) ? implode(', ', $v) : $v) . "\n";
         }
 
         foreach ($arrForm as $k => $v) {
-            \Haste\Util\StringUtil::flatten($v, 'formconfig_'.$k, $arrTokens, $delimiter);
+            $this->flatten($v, 'formconfig_'.$k, $arrTokens, $delimiter);
         }
 
         // Administrator e-mail
@@ -170,5 +170,37 @@ class Hooks extends \Controller
         }
 
         return $arrTokens;
+    }
+
+    /**
+     * Flatten input data, Simple Tokens can't handle arrays
+     *
+     * @param mixed  $varValue
+     * @param string $strKey
+     * @param array  $arrData
+     * @param string $strPattern
+     */
+    public function flatten($varValue, $strKey, array &$arrData, $strPattern = ', ')
+    {
+        if (is_object($varValue)) {
+            return;
+        } elseif (!is_array($varValue)) {
+            $arrData[$strKey] = $varValue;
+            return;
+        }
+
+        $blnAssoc = array_is_assoc($varValue);
+        $arrValues = array();
+
+        foreach ($varValue as $k => $v) {
+            if ($blnAssoc || is_array($v)) {
+                $this->flatten($v, $strKey.'_'.$k, $arrData);
+            } else {
+                $arrData[$strKey.'_'.$v] = '1';
+                $arrValues[]             = $v;
+            }
+        }
+
+        $arrData[$strKey] = implode($strPattern, $arrValues);
     }
 }
