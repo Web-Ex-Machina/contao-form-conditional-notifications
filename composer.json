@@ -17,28 +17,25 @@
         "source":"https://github.com/webexmachina/contao-form-conditional-notifications"
     },
     "require": {
-        "php": ">=5.5",
-        "contao/core-bundle": "~3.2 || ~4.1",
-        "contao-community-alliance/composer-plugin": "~2.4 || ~3.0",
-        "terminal42/dcawizard": "^2.4",
-        "terminal42/notification_center": "^1.4"
+        "contao/core-bundle": "^4.13",
+        "terminal42/dcawizard": "^3.0",
+        "terminal42/notification_center": "^1.7",
+        "webexmachina/contao-utils": "^2.0"
     },
     "autoload":{
-        "psr-0": {
-            "WEM\\": [
-                "library/"
-            ]
+        "psr-4": {
+            "WEM\\FormConditionalNotificationsBundle\\": "src/"
         },
-        "classmap": [""]
+        "classmap": [
+            "src/Resources/contao/"
+        ],
+        "exclude-from-classmap": [
+            "src/Resources/contao/config/",
+            "src/Resources/contao/dca/",
+            "src/Resources/contao/languages/"
+        ]
     },
-    "extra": {
-        "contao": {
-            "sources": {
-                "": "system/modules/wem-contao-form-conditional-notifications"
-            },
-            "runonce": [
-                "system/modules/wem-contao-form-conditional-notifications/config/runonce.php"
-            ]
-        }
+    "extra":{
+        "contao-manager-plugin": "WEM\\FormConditionalNotificationsBundle\\ContaoManager\\Plugin"
     }
 }
