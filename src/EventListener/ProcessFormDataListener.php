@@ -16,19 +16,16 @@ class ProcessFormDataListener
 {
 	public function __invoke(array $arrData, array $arrForm, ?array $arrFiles, array $arrLabels, Form $form): void
 	{
-		dump('hook');
-		die;
-
 		try {
 			// Check if we have an overide set up
-			if(0 === Notification::countBy('pid', $form->id))
+			if(0 === NotificationModel::countBy('pid', $form->id))
 				return;
 
 			// Then, check, in the sorting/priority order, if there is a match in the overides
-			$objRows = Notification::findBy('pid', $form->id, ["order"=>"sorting ASC"]);
+			$objRows = NotificationModel::findBy('pid', $form->id, ["order"=>"sorting ASC"]);
 			while($objRows->next()){
 				// Get all the conditions
-				$objConditions = Field::findBy('pid', $objRows->id, ["order"=>"sorting ASC"]);
+				$objConditions = FieldModel::findBy('pid', $objRows->id, ["order"=>"sorting ASC"]);
 				$blnSendNotification = true;
 
 				// If there is no conditions, we consider this as the default one and we must use it.
