@@ -9,6 +9,7 @@ use Contao\DataContainer;
 use Contao\FormFieldModel;
 use Contao\Image;
 use Contao\System;
+use Contao\StringUtil;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 use WEM\UtilsBundle\Classes\CountriesUtil;
@@ -76,6 +77,13 @@ class Notification
      */
     public function editNotification(DataContainer $dc): string
     {
-        return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=nc_notifications&amp;table=tl_nc_message&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . sprintf(specialchars($GLOBALS['TL_LANG']['tl_wem_form_conditional_notification']['editNotification'][1]), $dc->value) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_wem_form_conditional_notification']['editNotification'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.gif', $GLOBALS['TL_LANG']['tl_wem_form_conditional_notification']['editNotification'][0], 'style="vertical-align:top"') . '</a>';
+        if ($dc->value < 1) {
+            return '';
+        }
+
+        $title = sprintf($GLOBALS['TL_LANG']['tl_wem_form_conditional_notification']['editNotification'][1] ?: '%s', $dc->value);
+        $href = System::getContainer()->get('router')->generate('contao_backend', array('do'=>'nc_notifications', 'table'=>'tl_nc_message', 'id'=>$dc->value, 'popup'=>'1', 'nb'=>'1'));
+
+        return ' <a href="' . StringUtil::specialcharsUrl($href) . '" title="' . StringUtil::specialchars($title) . '" onclick="Backend.openModalIframe({\'title\':\'' . StringUtil::specialchars(str_replace("'", "\\'", $title)) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.svg', $title) . '</a>';
     }
 }
