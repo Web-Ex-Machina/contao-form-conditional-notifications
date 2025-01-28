@@ -90,7 +90,7 @@ class Field
 
     public function listItems($row): string
     {
-        $arrCountries = System::getCountries();
+        $arrCountries = CountriesUtil::getCountries();
         $objField = FormFieldModel::findByPk($row['field']);
         $strValue = '';
         switch($objField->type){
