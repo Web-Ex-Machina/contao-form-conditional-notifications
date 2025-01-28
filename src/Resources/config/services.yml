@@ -6,5 +6,10 @@ services:
             - { name: contao.callback, table: tl_wem_form_conditional_notification, target: fields.nc_notification.options, method: onNotificationOptionsCallback, priority: 100 }
                 
     WEM\FormConditionalNotificationsBundle\EventListener\ProcessFormDataListener:
+        arguments:
+            - '@Terminal42\NotificationCenterBundle\NotificationCenter'
+            - '@Codefog\HasteBundle\FileUploadNormalizer'
+            - '@Terminal42\NotificationCenterBundle\Config\ConfigLoader'
+            - '@?logger'
         tags:
             - { name: contao.hook, hook: processFormData }
