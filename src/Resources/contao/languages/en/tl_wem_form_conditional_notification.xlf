@@ -1,96 +1,74 @@
 <?xml version="1.0" ?><xliff version="1.1">
-  <file datatype="php" original="system/modules/wem-contao-form-conditional-notifications/languages/en/tl_wem_form_conditional_notification.php" source-language="en" target-language="fr">
+  <file datatype="php" original="system/modules/wem-contao-form-conditional-notifications/languages/en/tl_wem_form_conditional_notification.php" source-language="en" target-language="en">
     <body>
     	<trans-unit id="tl_wem_form_conditional_notification.conditions_legend">
 			<source>Conditions</source>
-			<target>Conditions</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.notification_legend">
 			<source>Notification</source>
-			<target>Notification</target>
 		</trans-unit>
 
 		<trans-unit id="tl_wem_form_conditional_notification.fields.0">
 			<source>Conditions</source>
-			<target>Conditions</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.fields.1">
 			<source>Manage the conditions for this contact</source>
-			<target>Gérer les conditions pour ce contact</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.nc_notification.0">
 			<source>Notification</source>
-			<target>Notification</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.nc_notification.1">
 			<source>Select the notification to send</source>
-			<target>Selectionner la notification à envoyer</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.language.0">
 			<source>Language</source>
-			<target>Langue</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.language.1">
 			<source>You can specify which language to use here</source>
-			<target>Vous pouvez spécifier la langue à utiliser ici</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.tokens.0">
 			<source>Tokens (use form_*key* in the notification)</source>
-			<target>Tokens (utilisez form_*clé* dans la notification)</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.tokens.1">
 			<source>Manage the specific tokens for the notification</source>
-			<target>Gérer les tokens spécifiques pour cette notification</target>
 		</trans-unit>
 
 		<trans-unit id="tl_wem_form_conditional_notification.new.0">
 			<source>New notification</source>
-			<target>Nouvelle notification</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.new.1">
 			<source>Create a new notification</source>
-			<target>Créer une nouvelle notification</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.edit.0">
 			<source>Edit notification</source>
-			<target>Editer la notification</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.edit.1">
 			<source>Edit notification ID %s</source>
-			<target>Editer la notification ID %s</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.delete.0">
 			<source>Delete notification</source>
-			<target>Supprimer la notification</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.delete.1">
 			<source>Delete notification ID %s</source>
-			<target>Supprimer la notification ID %s</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.show.0">
 			<source>Show notification</source>
-			<target>Afficher la notification</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.show.1">
 			<source>Show notification ID %s</source>
-			<target>Afficher la notification ID %s</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.import.0">
 			<source>Import</source>
-			<target>Importer</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.import.1">
 			<source>Import notifications</source>
-			<target>Importer des notifications</target>
 		</trans-unit>
 
 		<trans-unit id="tl_wem_form_conditional_notification.editNotification.0">
 			<source>Edit Notification</source>
-			<target>Editer la notification</target>
 		</trans-unit>
 		<trans-unit id="tl_wem_form_conditional_notification.editNotification.1">
 			<source>Edit Notification ID %s</source>
-			<target>Editer la notification ID %s</target>
 		</trans-unit>
     </body>
   </file>
