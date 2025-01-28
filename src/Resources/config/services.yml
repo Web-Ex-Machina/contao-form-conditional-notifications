@@ -1,11 +1,7 @@
 services:
-    _defaults:
-        autoconfigure: true
-
-    _instanceof:
-        Contao\CoreBundle\Framework\FrameworkAwareInterface:
-            calls:
-                - [setFramework, ['@contao.framework']]
+    WEM\FormConditionalNotificationsBundle\EventListener\Backend\DataContainer\FormConditionalNotificationListener:
+        tags:
+            - { name: contao.callback, table: tl_wem_form_conditional_notification, target: fields.nc_notification.options, method: onNotificationOptionsCallback, priority: 100 }
                 
     WEM\FormConditionalNotificationsBundle\EventListener\ProcessFormDataListener:
         tags:
