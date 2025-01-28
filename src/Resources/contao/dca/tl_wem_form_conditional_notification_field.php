@@ -45,14 +45,6 @@ $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification_field'] = array
 			'child_record_callback'   => array(Field::class, 'listItems'),
 			'disableGrouping'		  => true
 		),
-		'global_operations' => [
-			'all',
-		],
-		'operations' => [
-			'edit',
-			'delete',
-			'show'
-		],
 	),
 
 	// Palettes
