@@ -1,4 +1,12 @@
 services:
+    _defaults:
+        autoconfigure: true
+
+    _instanceof:
+        Contao\CoreBundle\Framework\FrameworkAwareInterface:
+            calls:
+                - [setFramework, ['@contao.framework']]
+                
     WEM\FormConditionalNotificationsBundle\EventListener\ProcessFormDataListener:
         tags:
             - { name: contao.hook, hook: processFormData }
