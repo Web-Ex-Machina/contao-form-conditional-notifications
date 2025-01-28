@@ -41,19 +41,6 @@ $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification'] = array
 			'headerFields'            => array('title', 'tstamp', 'formID', 'storeValues', 'sendViaEmail', 'recipient', 'subject'),
 			'child_record_callback'   => array(Notification::class, 'listItems')
 		),
-		'global_operations' => [
-			'all',
-		],
-		'operations' => [
-			'edit',
-			'copy',
-			'delete',
-			'show',
-			'fields' => [
-				'href' => 'table=tl_wem_form_conditional_notification_field',
-				'icon' => 'editor.gif'
-			],
-		],
 	),
 
 	// Palettes
