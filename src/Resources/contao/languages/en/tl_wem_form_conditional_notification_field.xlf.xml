@@ -1,0 +1,47 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="system/modules/wem-contao-form-conditional-notifications/languages/en/tl_wem_form_conditional_notification_field.php" source-language="en" target-language="en">
+    <body>
+    	<trans-unit id="tl_wem_form_conditional_notification_field.general_legend">
+			<source>General informations</source>
+		</trans-unit>
+
+		<trans-unit id="tl_wem_form_conditional_notification_field.field.0">
+			<source>Field</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.field.1">
+			<source>Select the concerned field.</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.value.0">
+			<source>Value</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.value.1">
+			<source>Enter the field value.</source>
+		</trans-unit>
+
+		<trans-unit id="tl_wem_form_conditional_notification_field.new.0">
+			<source>New condition</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.new.1">
+			<source>Create a new condition</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.edit.0">
+			<source>Edit condition</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.edit.1">
+			<source>Edit condition ID %s</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.delete.0">
+			<source>Delete condition</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.delete.1">
+			<source>Delete condition ID %s</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.show.0">
+			<source>Show condition</source>
+		</trans-unit>
+		<trans-unit id="tl_wem_form_conditional_notification_field.show.1">
+			<source>Show condition ID %s</source>
+		</trans-unit>
+    </body>
+  </file>
+</xliff>
