@@ -1,5 +1,7 @@
 <?php
 
+use Contao\DataContainer;
+use Contao\DC_Table;
 use WEM\FormConditionalNotificationsBundle\DataContainer\Field;
 
 /**
@@ -11,7 +13,7 @@ $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification_field'] = array
 	// Config
 	'config' => array
 	(
-		'dataContainer'               => 'Table',
+		'dataContainer'               => DC_Table::class,
 		'enableVersioning'            => true,
 		'ptable'                      => 'tl_wem_form_conditional_notification',
 		'onload_callback'			  => array
@@ -34,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification_field'] = array
 	(
 		'sorting' => array
 		(
-			'mode'                    => 4,
+			'mode'                    => DataContainer::MODE_PARENT,
 			'fields'                  => array('sorting'),
 			'panelLayout'             => 'filter;search,limit',
 			'headerFields'            => array('nc_notification', 'language'),
