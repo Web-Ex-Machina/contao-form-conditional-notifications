@@ -12,13 +12,8 @@ use Contao\System;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 
-class Field extends \tl_wem_form_conditional_notification_field
+class Field
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function adjustPalette($objDc)
     {
         $objField = FieldModel::findByPk($objDc->id);

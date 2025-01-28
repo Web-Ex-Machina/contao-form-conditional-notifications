@@ -12,13 +12,8 @@ use NotificationCenter\Model\Notification as NotificationCore;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 
-class Notification extends \tl_wem_form_conditional_notification
+class Notification
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function listItems(array $row): string
     {
         $pattern = '%s | %s<br /><ul style="padding-left:15px">%s</ul>';
