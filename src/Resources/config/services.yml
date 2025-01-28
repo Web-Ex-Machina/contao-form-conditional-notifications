@@ -1,5 +1,7 @@
 services:
     WEM\FormConditionalNotificationsBundle\EventListener\Backend\DataContainer\FormConditionalNotificationListener:
+        arguments:
+            - '@Terminal42\NotificationCenterBundle\NotificationCenter'
         tags:
             - { name: contao.callback, table: tl_wem_form_conditional_notification, target: fields.nc_notification.options, method: onNotificationOptionsCallback, priority: 100 }
                 
