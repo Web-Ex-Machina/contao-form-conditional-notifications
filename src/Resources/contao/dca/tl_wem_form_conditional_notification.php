@@ -3,12 +3,6 @@
 use WEM\FormConditionalNotificationsBundle\DataContainer\Notification;
 
 /**
- * Load tl_form language file
- */
-System::loadLanguageFile('tl_form');
-System::loadLanguageFile('tl_nc_language');
-
-/**
  * Table tl_wem_form_conditional_notification
  */
 $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification'] = array
