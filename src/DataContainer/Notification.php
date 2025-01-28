@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WEM\FormConditionalNotificationsBundle\DataContainer;
 
+use Contao\Backend;
 use Contao\DataContainer;
 use Contao\FormFieldModel;
 use Contao\Image;
@@ -11,17 +12,28 @@ use Contao\System;
 use NotificationCenter\Model\Notification as NotificationCore;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
+use WEM\UtilsBundle\Classes\CountriesUtil;
 
 class Notification
 {
     public function listItems(array $row): string
     {
         $pattern = '%s | %s<br /><ul style="padding-left:15px">%s</ul>';
-        $arrLanguages = System::getLanguages();
-        $arrCountries = System::getCountries();
+        $arrLanguages = System::getContainer()->get('contao.intl.locales')->getLocales();
+        $arrCountries = CountriesUtil::getCountries();
+        $conn = System::getContainer()->get('database_connection');
 
-        $objNotification = NotificationCore::findByPk($row['nc_notification']);
-        $args[] = $objNotification->title;
+        $res = $conn->createQueryBuilder()
+            ->select('id', 'title')
+            ->from('tl_nc_notification')
+            ->where('id = :id')
+            ->orderBy('title')
+            ->setParameter('id', $row['nc_notification'])
+            ->executeQuery()
+            ->fetchAllKeyValue()
+        ;
+
+        $args[] = $res ? $res->title : 'Notification not selected';
         $args[] = $arrLanguages[$row['language']] ?: $GLOBALS['TL_LANG']['WEM']['FCN']['neutral'];
 
         // Get the fields

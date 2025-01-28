@@ -11,6 +11,7 @@ use Contao\Image;
 use Contao\System;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
+use WEM\UtilsBundle\Classes\CountriesUtil;
 
 class Field
 {
@@ -56,7 +57,7 @@ class Field
 
         if($objFormField->type == "countryselect"){
             $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification_field']['fields']['value']['inputType'] = 'select';
-            $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification_field']['fields']['value']['options'] = System::getCountries();
+            $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification_field']['fields']['value']['options'] = CountriesUtil::getCountries();
             $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification_field']['fields']['value']['eval']['chosen'] = true;
         }
     }
@@ -68,12 +69,21 @@ class Field
      */
     public function getFormFields($objDc): array
     {
-        $objFormSubmissionField = $this->Database->prepare("SELECT pid FROM tl_wem_form_conditional_notification_field WHERE id = ?")->execute($objDc->id);
-        $objFormSubmission = $this->Database->prepare("SELECT pid FROM tl_wem_form_conditional_notification WHERE id = ?")->execute($objFormSubmissionField->pid);
-        $objFormFields = $this->Database->prepare("SELECT * FROM tl_form_field WHERE pid = ?")->execute($objFormSubmission->pid);
+        if ('tl_wem_form_conditional_notification_field' !== $objDc->table) {
+            return [];
+        }
+
+        $objFormNotificationField = FieldModel::findByPk($objDc->id);
+        $objFormNotification = $objFormNotificationField->getRelated('pid');
+        $objFields = FormFieldModel::findByPid($objFormNotification->pid);
+
+        if (!$objFields || 0 === $objFields->count()) {
+            return [];
+        }
+
         $arrFields = array();
-        while ($objFormFields->next()) {
-            $arrFields[$objFormFields->id] = $objFormFields->label;
+        while ($objFields->next()) {
+            $arrFields[$objFields->id] = $objFields->label;
         }
         return $arrFields;
     }
