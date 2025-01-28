@@ -1,0 +1,9 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+	<title>Nouveau projet</title>
+	<defs>
+		<image  width="16" height="13" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAANCAMAAACXZR4WAAAAAXNSR0IB2cksfwAAAIdQTFRF/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/7oA/LxXQAAAAC10Uk5TdLm/uHLt//DW013bXk87tvc8TuZ2J4r9i3W+RD+7Q/zfWDmp7lfetUE62JZzs1J6fQAAAHdJREFUeJxVzssKgzAQQNG5vpCA0NKCuHcj9P9/xY37EhC6E/ocJ2mhyezuSSYEAfkPUKcdpP1kUOJ4Jl1DZ2vbL50WcDLgFvvIu3rQyNnEW/davFYxGMIdRLXkfg1gu30EH96KIDIaLN+PNJIPhy1rx2XW9HzaARyQGK1FHM/2AAAAAElFTkSuQmCC"/>
+	</defs>
+	<style>
+	</style>
+	<use id="1608678_envelope_icon" href="#img1" x="0" y="2"/>
+</svg>
