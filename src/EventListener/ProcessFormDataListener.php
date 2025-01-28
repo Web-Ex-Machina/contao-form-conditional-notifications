@@ -8,7 +8,6 @@ use Contao\Form;
 use Contao\FormFieldModel;
 use Contao\System;
 use Exception;
-use NotificationCenter\Model\Notification;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 

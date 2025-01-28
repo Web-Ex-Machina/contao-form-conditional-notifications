@@ -9,7 +9,6 @@ use Contao\DataContainer;
 use Contao\FormFieldModel;
 use Contao\Image;
 use Contao\System;
-use NotificationCenter\Model\Notification as NotificationCore;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 use WEM\UtilsBundle\Classes\CountriesUtil;
