@@ -1,0 +1,10 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_form.php" source-language="en" target-language="fr">
+    <body>
+      <trans-unit id="tl_form.wem_conditional_notifications">
+        <source>Display the form conditional notifications</source>
+        <target>Afficher les notifications conditionnelles du formulaire ID %s</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
