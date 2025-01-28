@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use Contao\DataContainer;
 use Contao\DC_Table;
+use Contao\System;
 use WEM\FormConditionalNotificationsBundle\DataContainer\Notification;
 
 /**
@@ -38,44 +41,19 @@ $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification'] = array
 			'headerFields'            => array('title', 'tstamp', 'formID', 'storeValues', 'sendViaEmail', 'recipient', 'subject'),
 			'child_record_callback'   => array(Notification::class, 'listItems')
 		),
-		'global_operations' => array
-		(
-			'all' => array
-			(
-				'href'                => 'act=select',
-				'class'               => 'header_edit_all',
-				'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-			)
-		),
-		'operations' =>
-		(
-			'edit' => array
-			(
-				'href'                => 'act=edit',
-				'icon'                => 'edit.gif'
-			),
-			'copy' => array
-			(
-				'href'                => 'act=paste&amp;mode=copy&amp;childs=1',
-				'icon'                => 'copy.gif'
-			),
-			'delete' => array
-			(
-				'href'                => 'act=delete',
-				'icon'                => 'delete.gif',
-				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
-			),
-			'show' => array
-			(
-				'href'                => 'act=show',
-				'icon'                => 'show.gif'
-			),
-			'fields' => array
-			(
-				'href'                => 'table=tl_wem_form_conditional_notification_field',
-				'icon'                => 'editor.gif'
-			),
-		)
+		'global_operations' => [
+			'all',
+		],
+		'operations' => [
+			'edit',
+			'copy',
+			'delete',
+			'show',
+			'fields' => [
+				'href' => 'table=tl_wem_form_conditional_notification_field',
+				'icon' => 'editor.gif'
+			],
+		],
 	),
 
 	// Palettes
@@ -110,7 +88,6 @@ $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification'] = array
 		(
 			'exclude'                   => true,
 			'inputType'                 => 'select',
-			'options_callback'          => array('NotificationCenter\tl_form', 'getNotificationChoices'),
 			'eval'                      => array('includeBlankOption'=>true, 'chosen'=>true, 'mandatory'=>true, 'tl_class'=>'w50 wizard'),
 			'wizard' => array
 			(
@@ -122,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification'] = array
         (
             'exclude'                 => true,
             'inputType'               => 'select',
-            'options'                 => System::getLanguages(),
+            'options_callback'        => static fn () => System::getContainer()->get('contao.intl.locales')->getLocales(),
             'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
             'sql'                     => "varchar(5) NOT NULL default ''"
         ),
@@ -154,20 +131,3 @@ $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification'] = array
 		),
 	)
 );
-
-/**
- * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @author Web ex Machina <https://www.webexmachina.fr>
- */
-class tl_wem_form_conditional_notification extends Backend
-{
-	/**
-	 * Import the back end user object
-	 */
-	public function __construct(){
-		parent::__construct();
-
-		$this->import('BackendUser', 'User');
-	}
-}
