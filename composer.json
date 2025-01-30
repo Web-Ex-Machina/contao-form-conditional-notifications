@@ -18,7 +18,7 @@
     },
     "require": {
         "contao/core-bundle": "^4.13 || ^5.3",
-        "terminal42/dcawizard": "^3.0",
+        "terminal42/dcawizard": "^2.7 || ^3.0",
         "terminal42/notification_center": "^2.2",
         "webexmachina/contao-utils": "^2.0"
     },
