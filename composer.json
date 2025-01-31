@@ -19,7 +19,7 @@
     "require": {
         "contao/core-bundle": "^4.13",
         "terminal42/dcawizard": "^2.7 || ^3.0",
-        "terminal42/notification_center": "^1.7",
+        "terminal42/notification_center": "^1.6",
         "webexmachina/contao-utils": "^2.0"
     },
     "autoload":{
