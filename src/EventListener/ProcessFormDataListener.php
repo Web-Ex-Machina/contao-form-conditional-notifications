@@ -9,6 +9,7 @@ use Contao\FormFieldModel;
 use Contao\System;
 use Exception;
 use NotificationCenter\Model\Notification;
+use NotificationCenter\Util\Form as FormUtil;
 use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
 use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
 
@@ -164,7 +165,7 @@ class ProcessFormDataListener
 
         // Upload fields
         foreach ($arrFiles as $fieldName => $file) {
-            $arrTokens['form_' . $fieldName] = Form::getFileUploadPathForToken($file);
+            $arrTokens['form_' . $fieldName] = FormUtil::getFileUploadPathForToken($file);
         }
 
         return $arrTokens;
