@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WEM\FormConditionalNotificationsBundle\DataContainer;
 
 use Contao\DataContainer;
+use Contao\Form;
 use Contao\FormModel;
 use Contao\FormFieldModel;
 use Contao\Image;
@@ -24,6 +25,7 @@ class Field extends \tl_wem_form_conditional_notification_field
         $objField = FieldModel::findByPk($objDc->id);
         $objFormField = FormFieldModel::findByPk($objField->field);
         $objForm = FormModel::findByPk($objFormField->pid);
+        $form = new Form($objForm);
 
         if($objFormField->type == "select" || $objFormField->type == "radio" || $objFormField->type == "checkbox"){
             $GLOBALS['TL_DCA']['tl_wem_form_conditional_notification_field']['fields']['value']['inputType'] = 'select';
@@ -38,7 +40,7 @@ class Field extends \tl_wem_form_conditional_notification_field
             if (isset($GLOBALS['TL_HOOKS']['loadFormField']) && is_array($GLOBALS['TL_HOOKS']['loadFormField'])){
                 foreach ($GLOBALS['TL_HOOKS']['loadFormField'] as $callback){
                     $this->import($callback[0]);
-                    $objWidget = $this->{$callback[0]}->{$callback[1]}($objWidget, "", $objForm->row(), $this);
+                    $objWidget = $this->{$callback[0]}->{$callback[1]}($objWidget, "", $objForm->row(), $form);
                 }
             }
 
