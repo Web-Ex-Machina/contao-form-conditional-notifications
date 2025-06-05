@@ -82,7 +82,7 @@ class ProcessFormDataListener
 							break;
 							default:
 								// Break the while loop if something is wrong
-								if($arrData[$objField->name] != $objConditions->value){
+								if (strtolower($arrData[$objField->name]) != strtolower($objConditions->value)) {
 									$blnSendNotification = false;
 									break(2);
 								}
