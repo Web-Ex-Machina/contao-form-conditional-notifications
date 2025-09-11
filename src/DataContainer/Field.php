@@ -83,7 +83,7 @@ class Field
 
         $arrFields = array();
         while ($objFields->next()) {
-            $arrFields[$objFields->id] = $objFields->label;
+            $arrFields[$objFormFields->id] = $objFormFields->label ?: $objFormFields->name;
         }
         return $arrFields;
     }
