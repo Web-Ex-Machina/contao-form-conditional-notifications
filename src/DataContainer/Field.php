@@ -80,7 +80,7 @@ class Field extends \tl_wem_form_conditional_notification_field
         $objFormFields = $this->Database->prepare("SELECT * FROM tl_form_field WHERE pid = ?")->execute($objFormSubmission->pid);
         $arrFields = array();
         while ($objFormFields->next()) {
-            $arrFields[$objFormFields->id] = $objFormFields->label;
+            $arrFields[$objFormFields->id] = $objFormFields->label ?: $objFormFields->name;
         }
         return $arrFields;
     }
