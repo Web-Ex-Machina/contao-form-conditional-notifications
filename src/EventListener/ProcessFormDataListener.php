@@ -63,6 +63,7 @@ class ProcessFormDataListener
 							case "radio":
 							case "checkbox":
 								$arrConditionValues = unserialize($objConditions->value);
+								$arrOptions = [];
 
 								foreach ($arrConditionValues as $strValue) {
 									$arrConditionValue = explode("**", $strValue);
@@ -71,7 +72,6 @@ class ProcessFormDataListener
 									if ($arrConditionValue[0] == "group"){
 										// First, find the correspondant key in the field options and use them to extract the possible options
 										$intStartKey = 0;
-										$arrOptions = [];
 										foreach (unserialize($objField->options) as $intKey => $arrOption) {
 											// Start point of our available options
 											if (array_key_exists('group', $arrOption) && $arrOption['group'] && $arrOption['value'] == $arrConditionValue[1]) {
