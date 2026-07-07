@@ -39,6 +39,11 @@ class Notification extends \tl_wem_form_conditional_notification
             $strList = '';
             while($objFields->next()){
                 $objField = FormFieldModel::findByPk($objFields->field);
+
+                if (null === $objFields->value) {
+                    continue;
+                }
+                
                 switch($objField->type){
                     case 'select':
                     case 'checkbox':
