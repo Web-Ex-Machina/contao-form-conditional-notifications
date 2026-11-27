@@ -2,224 +2,173 @@
 
 declare(strict_types=1);
 
+/**
+ * Contao Form Conditional Notifications Bundle for Contao Open Source CMS
+ * @author     Web Ex Machina
+ * @see        https://github.com/Web-Ex-Machina/contao-form-conditional-notifications
+ */
+
 namespace WEM\FormConditionalNotificationsBundle\EventListener;
 
 use Codefog\HasteBundle\FileUploadNormalizer;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
-use Contao\FormFieldModel;
 use Contao\StringUtil;
-use Contao\System;
-use Exception;
 use Psr\Log\LoggerInterface;
-use Terminal42\NotificationCenterBundle\Config\ConfigLoader;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Terminal42\NotificationCenterBundle\BulkyItem\FileItem;
+use Terminal42\NotificationCenterBundle\Config\ConfigLoader;
+use Terminal42\NotificationCenterBundle\Config\FormConfig;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
 use Terminal42\NotificationCenterBundle\Parcel\Stamp\BulkyItemsStamp;
 use Terminal42\NotificationCenterBundle\Parcel\Stamp\FormConfigStamp;
-use WEM\FormConditionalNotificationsBundle\Model\Field as FieldModel;
-use WEM\FormConditionalNotificationsBundle\Model\Notification as NotificationModel;
+use WEM\FormConditionalNotificationsBundle\Condition\ConditionMatcher;
+use WEM\FormConditionalNotificationsBundle\Model\Notification;
 
+/**
+ * Sends the first conditional notification (in sorting order) whose conditions match the submitted data.
+ */
+#[AsHook('processFormData')]
 class ProcessFormDataListener
 {
-	public function __construct(
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly ConditionMatcher $conditionMatcher,
         private readonly NotificationCenter $notificationCenter,
         private readonly FileUploadNormalizer $fileUploadNormalizer,
         private readonly ConfigLoader $configLoader,
-        private readonly LoggerInterface|null $logger = null,
+        #[Autowire(service: 'monolog.logger.contao.general')]
+        private readonly LoggerInterface $logger,
     ) {
     }
 
-	public function __invoke(array $arrData, array $arrForm, ?array $arrFiles, array $arrLabels, Form $form): void
-	{
-		try {
-			// Check if we have an overide set up
-			if (0 === NotificationModel::countBy('pid', $form->id)) {
-				return;
-			}
-
-			// Then, check, in the sorting/priority order, if there is a match in the overides
-			$objRows = NotificationModel::findBy('pid', $form->id, ["order"=>"sorting ASC"]);
-			
-			while ($objRows->next()) {
-				// Get all the conditions
-				$objConditions = FieldModel::findBy('pid', $objRows->id, ["order"=>"sorting ASC"]);
-				$blnSendNotification = true;
-
-				// If there is no conditions, we consider this as the default one and we must use it.
-				if ($objConditions && 0 < $objConditions->count()) {
-					// For each condition saved, check if the field sent match
-					while ($objConditions->next()) {
-						// Get the field model
-						$objField = FormFieldModel::findByPk($objConditions->field);
-
-						// You shall not be checked !
-						if (!$objField) {
-							continue;
-						}
-
-						// Depending on the field type, there is maybe a special treatment
-						switch ($objField->type) {
-							case "select":
-							case "radio":
-							case "checkbox":
-								$arrConditionValues = unserialize($objConditions->value);
-								$arrOptions = [];
-
-								foreach ($arrConditionValues as $strValue) {
-									$arrConditionValue = explode("**", $strValue);
-
-									// If we want a group, we must check if the selected value is in the group
-									if ($arrConditionValue[0] == "group"){
-										// First, find the correspondant key in the field options and use them to extract the possible options
-										$intStartKey = 0;
-										foreach (unserialize($objField->options) as $intKey => $arrOption) {
-											// Start point of our available options
-											if (array_key_exists('group', $arrOption) && $arrOption['group'] && $arrOption['value'] == $arrConditionValue[1]) {
-												$intStartKey = $intKey;
-											}
-											// End point of our available options
-											else if ($intStartKey > 0 && array_key_exists('group', $arrOption) && $arrOption['group']) {
-												break;
-											}
-											// Add option to available ones
-											else if($intStartKey > 0) {
-												$arrOptions[] = $arrOption['value'];
-											}
-										}
-									}
-									// Else, it's an option, and we add the plain value
-									else {
-										$arrOptions[] = $arrConditionValue[1];
-									}
-								}
-
-								// Then check if the value is in the available ones
-								if (!empty($arrOptions) && !in_array($arrData[$objField->name], $arrOptions)) {
-									$blnSendNotification = false;
-									break(2); // I want to break threeeeeee (it was three before... sad...)
-								}
-
-							break;
-							default:
-								// Break the while loop if something is wrong
-								if ($arrData[$objField->name] != $objConditions->value) {
-									$blnSendNotification = false;
-									break(2);
-								}
-						}
-					}
-				}
-
-				// If all the conditions are satisfying, send the notification and break the loop
-				if ($blnSendNotification) {
-					$this->sendNotification(
-						$arrData,
-						$arrForm,
-						$arrFiles,
-						$arrLabels,
-						$form,
-						$objRows->row()
-					);
-
-					$this->logger?->info(sprintf($GLOBALS['TL_LANG']['WEM']['FCN']['notificationSent'], $objNotification->id, $objRows->id));
-			        return;
-				}
-			}
-		}
-		catch (Exception $e) {
-			$this->logger?->error(vsprintf($GLOBALS['TL_LANG']['WEM']['FCN']['exceptionThrown'], [$e->getMessage(), $e->getTrace()]));
-		}
-	}
-
-	/**
+    /**
      * @param array<string, mixed>      $submittedData
      * @param array<string, mixed>      $formData
      * @param array<string, mixed>|null $files
      * @param array<string, mixed>      $labels
      */
-    public function sendNotification(array $submittedData, array $formData, array|null $files, array $labels, Form $form, array $arrNotif): void
+    public function __invoke(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
+    {
+        $notifications = $this->framework->getAdapter(Notification::class)->findBy('pid', (int) $form->id, [
+            'order' => 'sorting ASC',
+        ]);
+
+        if ($notifications === null) {
+            return;
+        }
+
+        foreach ($notifications as $notification) {
+            if (! $this->conditionMatcher->matches($notification, $submittedData)) {
+                continue;
+            }
+
+            try {
+                $this->sendNotification($notification, $submittedData, $formData, $files ?? [], $labels, $form);
+
+                $this->logger->info(\sprintf('The notification ID %s has been sent from the conditional notification ID %s', $notification->nc_notification, $notification->id));
+            } catch (\Throwable $e) {
+                $this->logger->error(\sprintf('Unable to send the conditional notification ID %s: %s', $notification->id, $e->getMessage()), [
+                    'exception' => $e,
+                ]);
+            }
+
+            return;
+        }
+    }
+
+    /**
+     * Tokens are built the same way as the Notification Center does for the form generator,
+     * then overridden by the ones configured on the conditional notification.
+     *
+     * @param array<string, mixed> $submittedData
+     * @param array<string, mixed> $formData
+     * @param array<string, mixed> $files
+     * @param array<string, mixed> $labels
+     */
+    private function sendNotification(Notification $notification, array $submittedData, array $formData, array $files, array $labels, Form $form): void
     {
         $tokens = [];
         $rawData = [];
         $rawDataFilled = [];
         $bulkyItemVouchers = [];
-        $files = !\is_array($files) ? [] : $files; // In Contao 4.13, $files can be null
 
         foreach ($submittedData as $k => $v) {
             // Skip the tokens that are not implodeable
             if (\is_array($v)) {
                 foreach ($v as $vv) {
-                    if (!\is_scalar($vv)) {
+                    if (! \is_scalar($vv)) {
                         continue 2;
                     }
                 }
             }
 
-            $label = isset($labels[$k]) && \is_string($labels[$k]) ? StringUtil::decodeEntities($labels[$k]) : ucfirst($k);
+            $label = isset($labels[$k]) && \is_string($labels[$k]) ? StringUtil::decodeEntities($labels[$k]) : ucfirst((string) $k);
+            $line = $label . ': ' . (\is_array($v) ? implode(', ', $v) : $v);
 
-            $tokens['formlabel_'.$k] = $label;
-            $tokens['form_'.$k] = $v;
+            $tokens['formlabel_' . $k] = $label;
+            $tokens['form_' . $k] = $v;
+            $rawData[] = $line;
 
-            $rawData[] = $label.': '.(\is_array($v) ? implode(', ', $v) : $v);
-
-            if (\is_array($v) || ('' !== (string) $v)) {
-                $rawDataFilled[] = $label.': '.(\is_array($v) ? implode(', ', $v) : $v);
+            if (\is_array($v) || (string) $v !== '') {
+                $rawDataFilled[] = $line;
             }
         }
 
         foreach ($formData as $k => $v) {
-            $tokens['formconfig_'.$k] = \is_string($v) ? StringUtil::decodeEntities($v) : $v;
+            $tokens['formconfig_' . $k] = \is_string($v) ? StringUtil::decodeEntities($v) : $v;
         }
 
         $tokens['raw_data'] = implode("\n", $rawData);
         $tokens['raw_data_filled'] = implode("\n", $rawDataFilled);
+        $tokens['html_data'] = implode('<br>', $rawData);
+        $tokens['html_data_filled'] = implode('<br>', $rawDataFilled);
 
-        foreach ($this->fileUploadNormalizer->normalize($files) as $k => $files) {
+        foreach ($this->fileUploadNormalizer->normalize($files) as $k => $normalizedFiles) {
+            $paths = [];
             $vouchers = [];
 
-            foreach ($files as $file) {
-                $fileItem = \is_resource($file['stream']) ?
-                    FileItem::fromStream($file['stream'], $file['name'], $file['type'], $file['size']) :
-                    FileItem::fromPath($file['tmp_name'], $file['name'], $file['type'], $file['size']);
+            foreach ($normalizedFiles as $file) {
+                $fileItem = \is_resource($file['stream'])
+                    ? FileItem::fromStream($file['stream'], $file['name'], $file['type'], $file['size'])
+                    : FileItem::fromPath($file['tmp_name'], $file['name'], $file['type'], $file['size']);
 
                 $vouchers[] = $this->notificationCenter->getBulkyItemStorage()->store($fileItem);
+                $paths[] = $file['tmp_name'];
             }
 
-            $tokens['form_'.$k] = implode(',', $vouchers);
-            $bulkyItemVouchers = array_merge($bulkyItemVouchers, $vouchers);
+            $tokens['form_' . $k] = implode(',', $vouchers);
+            $tokens['file_' . $k] = implode(',', $paths);
+            $bulkyItemVouchers = [...$bulkyItemVouchers, ...$vouchers];
         }
 
-        // Merge with the override ones
-        $arrOverrideTokens = unserialize($arrNotif['tokens']);
+        foreach (StringUtil::deserialize($notification->tokens, true) as $token) {
+            $key = (string) ($token['key'] ?? '');
 
-        if(is_array($arrOverrideTokens) && !empty($arrOverrideTokens)){
-        	// Fallback if the saved keys
-        	foreach($arrOverrideTokens as $arrToken){
-        		if("form_" != substr($arrToken["key"], 0, 5))
-        			$tokens["form_".$arrToken["key"]] = $arrToken['value'];
-        		else
-        			$tokens[$arrToken["key"]] = $arrToken['value'];
-        	}
+            if ($key === '') {
+                continue;
+            }
+
+            $tokens[str_starts_with($key, 'form_') ? $key : 'form_' . $key] = $token['value'] ?? '';
         }
 
         // Make sure we don't pass any objects as tokens
-        $tokens = array_filter($tokens, static fn ($v) => !\is_object($v));
+        $tokens = array_filter($tokens, static fn (mixed $v): bool => ! \is_object($v));
 
-        $stamps = $this->notificationCenter->createBasicStampsForNotification(
-            (int) $arrNotif['nc_notification'],
-            $tokens,
-        );
+        $notificationId = (int) $notification->nc_notification;
+        $stamps = $this->notificationCenter->createBasicStampsForNotification($notificationId, $tokens, $notification->language ?: null);
 
-        if (0 !== \count($bulkyItemVouchers)) {
+        if ($bulkyItemVouchers !== []) {
             $stamps = $stamps->with(new BulkyItemsStamp($bulkyItemVouchers));
         }
 
         $formConfig = $this->configLoader->loadForm((int) $form->id);
 
-        if (null !== $formConfig) {
+        if ($formConfig instanceof FormConfig) {
             $stamps = $stamps->with(new FormConfigStamp($formConfig));
         }
 
-        $this->notificationCenter->sendNotificationWithStamps((int) $arrNotif['nc_notification'], $stamps);
+        $this->notificationCenter->sendNotificationWithStamps($notificationId, $stamps);
     }
 }
