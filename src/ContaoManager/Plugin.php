@@ -2,34 +2,32 @@
 
 declare(strict_types=1);
 
+/**
+ * Contao Form Conditional Notifications Bundle for Contao Open Source CMS
+ * @author     Web Ex Machina
+ * @see        https://github.com/Web-Ex-Machina/contao-form-conditional-notifications
+ */
+
 namespace WEM\FormConditionalNotificationsBundle\ContaoManager;
 
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use Contao\NewsBundle\ContaoNewsBundle;
-use Symfony\Component\Config\Loader\LoaderResolverInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Terminal42\DcawizardBundle\Terminal42DcawizardBundle;
+use Terminal42\NotificationCenterBundle\Terminal42NotificationCenterBundle;
 use WEM\FormConditionalNotificationsBundle\WEMFormConditionalNotificationsBundle;
 
-/**
- * Plugin for the Contao Manager.
- *
- * @author Web ex Machina <https://www.webexmachina.fr>
- */
 class Plugin implements BundlePluginInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [
             BundleConfig::create(WEMFormConditionalNotificationsBundle::class)
                 ->setLoadAfter([
                     ContaoCoreBundle::class,
-                    'notification_center'
+                    Terminal42NotificationCenterBundle::class,
+                    Terminal42DcawizardBundle::class,
                 ])
                 ->setReplace(['wem-fcn']),
         ];

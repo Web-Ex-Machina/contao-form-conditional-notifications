@@ -3,7 +3,6 @@ Extension "Contao Form Conditional Notifications" for Contao Open Source CMS
 
 Extends the way Notification Center deals with Contao Forms by allow user to configure a Notification, depending on Form Field Values.
 
-After a long time with no updates, this bundle is now compatible with Contao 4.13 & PHP 8. We will also work on the compatibility with Contao 5.3 and the Notification Center 2 later this year.
 
 Functionnalities
 -------------------
@@ -12,11 +11,13 @@ Functionnalities
 
 System requirements
 -------------------
- * Contao 4.13 (Manager Edition)
+ * PHP 8.4+
+ * Contao 5.7+ (Manager Edition)
+ * Notification Center 2.7+
 
 Installation
 ------------
-Clone the extension from Packagist (Contao Manager)
+Install the extension from Packagist (Contao Manager) or with `composer require webexmachina/contao-form-conditional-notifications`
 
 Documentation
 -------------
@@ -31,6 +32,15 @@ available in the main folder.
 Getting support
 ---------------
 Visit the [support page][3] to submit an issue or just get in touch :)
+
+Development
+-----------
+
+```bash
+composer install
+vendor/bin/rector process --dry-run
+vendor/bin/ecs check
+```
 
 Installing from Git
 -------------------

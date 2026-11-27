@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  WEM\FormConditionalNotificationsBundle\:
+    resource: ../src/
+    exclude: ../src/{ContaoManager,DependencyInjection,Model,WEMFormConditionalNotificationsBundle.php}
